@@ -12,7 +12,7 @@ for profile, sessions in profile_events():
     psessions = profile.get('sessions')
     if psessions == None:
         psessions = profile['sessions'] = ChunkedList()
-    psessions.push(sessions)
+    psessions.push(s.object for s in sessions)
     psessions.drop_chunks(lambda x: now - x['t'] <= PROFILE_RETENTION)
     profile.set_expire(PROFILE_RETENTION)
 
