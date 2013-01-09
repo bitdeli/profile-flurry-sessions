@@ -1,4 +1,5 @@
 import time
+import json
 
 from bitdeli import profile_events
 from bitdeli.protocol import params
@@ -12,8 +13,9 @@ for profile, sessions in profile_events():
     psessions = profile.get('sessions')
     if psessions == None:
         psessions = profile['sessions'] = ChunkedList()
+    psessions.drop_chunks(lambda x:\
+                          now - json.loads(x.data)['t'] <= PROFILE_RETENTION)
     psessions.push(s.object for s in sessions)
-    psessions.drop_chunks(lambda x: now - x['t'] <= PROFILE_RETENTION)
     profile.set_expire(PROFILE_RETENTION)
 
 
